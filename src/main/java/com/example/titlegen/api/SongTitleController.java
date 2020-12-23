@@ -26,7 +26,17 @@ public class SongTitleController {
     @PostMapping
     public @ResponseBody String addNewSongTitle (@RequestBody SongTitle songTitle) {
         SongTitle n = new SongTitle();
-        n.setName(songTitle.getName());
+        String name = songTitle.getName();
+        String[] nameList = name.toLowerCase().split(" ");
+        StringBuilder firstHalf = new StringBuilder();
+        if (nameList[0].equals("the")) {
+            for (int i = 1; i < nameList.length; i++) {
+                String first = nameList[i] + nameList[i + 1];
+                firstHalf.append(first);
+            }
+        }
+        n.setName(name);
+
         n.setFirst_half(songTitle.getName());
         n.setSecond_half(songTitle.getName());
         songTitledao.save(n);

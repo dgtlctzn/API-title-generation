@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.util.UUID;
 @Entity
-@Table(name = "song_titles")
+@Table(name = "song_title")
 public class SongTitle {
 
     @Id

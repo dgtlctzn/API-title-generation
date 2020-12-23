@@ -10,12 +10,13 @@ import lombok.Setter;
 
 import java.util.UUID;
 @Entity
-@Table(name = "song_title")
+@Table(name = "song_test")
 public class SongTitle {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
+    private String name;
     private String first_half;
     private String second_half;
 
@@ -31,15 +32,25 @@ public class SongTitle {
         return this.first_half;
     }
 
-    public void setFirst_half(String first_half) {
-        this.first_half = first_half;
+    public void setFirst_half(String name) {
+        String[] sep = name.split(" ");
+        this.first_half = sep[0];
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public String getSecond_half() {
         return this.second_half;
     }
 
-    public void setSecond_half(String second_half) {
-        this.second_half = second_half;
+    public void setSecond_half(String name) {
+        String[] sep = name.split(" ");
+        this.second_half = sep[1];
     }
 }

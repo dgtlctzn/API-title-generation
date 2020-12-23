@@ -23,14 +23,12 @@ public class SongTitleController {
     @Autowired
     private SongTitleDao songTitledao;
 
-    @PostMapping // Map ONLY POST Requests
+    @PostMapping
     public @ResponseBody String addNewSongTitle (@RequestBody SongTitle songTitle) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
         SongTitle n = new SongTitle();
-        n.setFirst_half(songTitle.getFirst_half());
-        n.setSecond_half(songTitle.getSecond_half());
+        n.setName(songTitle.getName());
+        n.setFirst_half(songTitle.getName());
+        n.setSecond_half(songTitle.getName());
         songTitledao.save(n);
         return "Saved";
     }

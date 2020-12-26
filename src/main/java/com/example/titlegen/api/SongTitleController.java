@@ -1,8 +1,10 @@
 package com.example.titlegen.api;
 
 import com.example.titlegen.dao.NounDao;
+import com.example.titlegen.dao.VerbDao;
 import com.example.titlegen.model.Nouns;
 import com.example.titlegen.model.SongTitles;
+import com.example.titlegen.model.Verbs;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class SongTitleController {
 
     @Autowired
     private NounDao nounDao;
+    @Autowired
+    private VerbDao verbDao;
 
     @PostMapping
     public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles,
@@ -28,17 +32,26 @@ public class SongTitleController {
         };
         Document doc = new Document(songTitles.getName());
         int nounsNum = 0;
+        int verbsNum = 0;
         for (Sentence sentence : doc.sentences()) {
             for (int i = 0; i < sentence.length(); i++) {
+                // save nouns "NN" to noun table
                 if (sentence.posTag(i).contains("NN")) {
                     Nouns noun = new Nouns();
                     noun.setNoun(sentence.word(i));
                     nounDao.save(noun);
                     nounsNum += 1;
+                // save verbs "VB" to verb table
+                } else if (sentence.posTag(i).contains("VB")) {
+                    Verbs verb = new Verbs();
+                    verb.setVerb(sentence.word(i));
+                    verbDao.save(verb);
+                    verbsNum += 1;
                 }
             }
         }
-        return "Saved " + nounsNum + " nouns";
+        return "Saved " + nounsNum + " nouns\n" +
+                verbsNum + " verbs";
     }
 //
 //    @Autowired

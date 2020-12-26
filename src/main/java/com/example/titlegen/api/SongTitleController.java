@@ -53,18 +53,24 @@ public class SongTitleController {
 
     @GetMapping
     public String getAllSongTitles() {
-        StringBuilder genTitle = new StringBuilder();
+        Random random = new Random();
 
         Iterable<Nouns> nouns = nounDao.findAll();
+        int nounLength = (int)nouns.spliterator().getExactSizeIfKnown();
+        int randNounNum = random.nextInt(nounLength);
         List<String> nounList = new ArrayList<>();
         for (Nouns noun : nouns) {
             nounList.add(noun.getSongTitle());
         }
-        Random random = new Random();
-        int num = (int)nouns.spliterator().getExactSizeIfKnown();
-        int randNounNum = random.nextInt(num);
-        genTitle.append(nounList.get(randNounNum));
-        return genTitle.toString();
+
+        Iterable<Verbs> verbs = verbDao.findAll();
+        int verbLength = (int)verbs.spliterator().getExactSizeIfKnown();
+        int randVerbNum = random.nextInt(verbLength);
+        List<String> verbList = new ArrayList<>();
+        for (Verbs verb : verbs) {
+            verbList.add(verb.getVerb());
+        }
+        return verbList.get(randVerbNum) + " " + nounList.get(randNounNum);
     }
 //
 //    @Autowired

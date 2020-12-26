@@ -3,13 +3,13 @@ package com.example.titlegen.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "nouns")
-public class Nouns {
+@Table(name = "song_titles_2")
+public class SongTitles {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private String noun;
+    private String songTitles;
 
     public Integer getId() {
         return this.id;
@@ -19,11 +19,11 @@ public class Nouns {
         this.id = id;
     }
 
-    public void setNoun(String noun) {
-        this.noun = noun;
+    public void setName(String name) {
+        this.songTitles = name;
     }
 
-    public String getSongTitle() {
-        return this.noun;
+    public String getName() {
+        return this.songTitles;
     }
 }

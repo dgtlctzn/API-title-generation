@@ -1,46 +1,39 @@
 package com.example.titlegen.api;
 
-import com.example.titlegen.dao.SongTitleDao;
-import com.example.titlegen.model.SongTitle;
-//import com.example.titlegen.service.SongTitleService;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.internal.NotNull;
+import com.example.titlegen.dao.NounDao;
+import com.example.titlegen.model.Nouns;
+import com.example.titlegen.model.SongTitles;
+import edu.stanford.nlp.simple.Document;
+import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RequestMapping("/api/v1/songtitle")
 @RestController
 public class SongTitleController {
 
     @Autowired
-    private SongTitleDao songTitledao;
+    private NounDao nounDao;
 
     @PostMapping
-    public @ResponseBody String addNewSongTitle (@RequestBody SongTitle songTitle) {
-        SongTitle n = new SongTitle();
-        String name = songTitle.getName();
-        String[] nameList = name.toLowerCase().split(" ");
-        StringBuilder firstHalf = new StringBuilder();
-        if (nameList[0].equals("the")) {
-            for (int i = 1; i < nameList.length; i++) {
-                String first = nameList[i] + nameList[i + 1];
-                firstHalf.append(first);
+    public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles) {
+        Document doc = new Document(songTitles.getName());
+        int nounsNum = 0;
+        for (Sentence sentence : doc.sentences()) {
+            for (int i = 0; i < sentence.length(); i++) {
+                if (sentence.posTag(i).contains("NN")) {
+                    Nouns noun = new Nouns();
+                    noun.setNoun(sentence.word(i));
+                    nounDao.save(noun);
+                    nounsNum += 1;
+                }
             }
         }
-        n.setName(name);
-
-        n.setFirst_half(songTitle.getName());
-        n.setSecond_half(songTitle.getName());
-        songTitledao.save(n);
-        return "Saved";
+        return "Saved " + nounsNum + " nouns";
     }
 //
 //    @Autowired
@@ -64,18 +57,18 @@ public class SongTitleController {
 //        return songTitleService.getAllSongTitles();
 //    }
 //
-    @GetMapping
-    public List<SongTitle> getSongTitleById(@RequestParam("id") Optional<Integer> id) {
-        if (id.isPresent()) {
-            List<SongTitle> foundList = new ArrayList<>();
-            Optional<SongTitle> x = songTitledao.findById(id.get());
-            if (x.isPresent()) {
-                foundList.add(x.get());
-                return foundList;
-            }
-        }
-        return (List<SongTitle>) songTitledao.findAll();
-    }
+//    @GetMapping
+//    public List<SongTitles> getSongTitleById(@RequestParam("id") Optional<Integer> id) {
+//        if (id.isPresent()) {
+//            List<SongTitles> foundList = new ArrayList<>();
+//            Optional<SongTitles> x = songTitledao.findById(id.get());
+//            if (x.isPresent()) {
+//                foundList.add(x.get());
+//                return foundList;
+//            }
+//        }
+//        return (List<SongTitles>) songTitledao.findAll();
+//    }
 //
 //    @DeleteMapping(path = "{id}")
 //    public void deleteSongTitleById(@PathVariable("id") UUID id) {

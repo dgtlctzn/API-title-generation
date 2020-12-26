@@ -1,13 +1,5 @@
 package com.example.titlegen.dao;
-import com.example.titlegen.dao.SongTitleDao;
-import com.example.titlegen.model.SongTitle;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository("mysql")
 public class SongTitleDataAccess {

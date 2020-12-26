@@ -10,10 +10,7 @@ import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequestMapping("/api/v1/songtitle")
 @RestController
@@ -52,6 +49,22 @@ public class SongTitleController {
         }
         return "Saved " + nounsNum + " nouns\n" +
                 verbsNum + " verbs";
+    }
+
+    @GetMapping
+    public String getAllSongTitles() {
+        StringBuilder genTitle = new StringBuilder();
+
+        Iterable<Nouns> nouns = nounDao.findAll();
+        List<String> nounList = new ArrayList<>();
+        for (Nouns noun : nouns) {
+            nounList.add(noun.getSongTitle());
+        }
+        Random random = new Random();
+        int num = (int)nouns.spliterator().getExactSizeIfKnown();
+        int randNounNum = random.nextInt(num);
+        genTitle.append(nounList.get(randNounNum));
+        return genTitle.toString();
     }
 //
 //    @Autowired

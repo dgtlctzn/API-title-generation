@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/api/v1/songtitle")
@@ -20,7 +21,11 @@ public class SongTitleController {
     private NounDao nounDao;
 
     @PostMapping
-    public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles) {
+    public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles,
+                                                 @RequestHeader Map<String,String> headers) {
+        if (!headers.get("authorization").equals("-2E]2n[Iy6<7Oma")) {
+            return "Invalid Key";
+        };
         Document doc = new Document(songTitles.getName());
         int nounsNum = 0;
         for (Sentence sentence : doc.sentences()) {

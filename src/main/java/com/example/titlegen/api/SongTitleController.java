@@ -109,7 +109,7 @@ public class SongTitleController {
                     verb.setVerb(sentence.word(i));
                     verbDao.save(verb);
                     verbsNum += 1;
-                } else if (pos.contains("PRP")) {
+                } else if (pos.contains("PRP$")) {
                     // save pronouns "PRP" to pronoun table
                     Pronouns pronoun = new Pronouns();
                     pronoun.setPronoun(sentence.word(i));
@@ -148,7 +148,7 @@ public class SongTitleController {
         } else if (randomPos == 2) {
             return findVerb() + " " + findPreposition() + " " + findNoun();
         } else {
-            return findNoun() + " " + findPreposition() + " " + findPronoun();
+            return findNoun() + " " + findPreposition() + " " + findPronoun() + " " + findNoun();
         }
     }
 //

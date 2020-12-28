@@ -26,6 +26,7 @@ public class SongTitleController {
 
     public Random random = new Random();
 
+    // functions to randomly choose a word from the db by word type
     public String findNoun() {
         Iterable<Nouns> nouns = nounDao.findAll();
         int nounLength = (int)nouns.spliterator().getExactSizeIfKnown();
@@ -35,6 +36,50 @@ public class SongTitleController {
             nounList.add(noun.getSongTitle());
         }
         return nounList.get(randNounNum);
+    }
+
+    public String findVerb() {
+        Iterable<Verbs> verbs = verbDao.findAll();
+        int verbLength = (int)verbs.spliterator().getExactSizeIfKnown();
+        int randVerbNum = random.nextInt(verbLength);
+        List<String> verbList = new ArrayList<>();
+        for (Verbs verb : verbs) {
+            verbList.add(verb.getVerb());
+        }
+        return verbList.get(randVerbNum);
+    }
+
+    public String findPronoun() {
+        Iterable<Pronouns> pronouns = pronounDao.findAll();
+        int pronounLength = (int)pronouns.spliterator().getExactSizeIfKnown();
+        int randPronounNum = random.nextInt(pronounLength);
+        List<String> pronounList = new ArrayList<>();
+        for (Pronouns pronoun : pronouns) {
+            pronounList.add(pronoun.getPronoun());
+        }
+        return pronounList.get(randPronounNum);
+    }
+
+    public String findDeterminer() {
+        Iterable<Determiners> determiners = determinerDao.findAll();
+        int determinerLength = (int)determiners.spliterator().getExactSizeIfKnown();
+        int randDeterminerNum = random.nextInt(determinerLength);
+        List<String> determinerList = new ArrayList<>();
+        for (Determiners determiner : determiners) {
+            determinerList.add(determiner.getDeterminer());
+        }
+        return determinerList.get(randDeterminerNum);
+    }
+
+    public String findPreposition() {
+        Iterable<Prepositions> prepositions = prepositionDao.findAll();
+        int prepositionLength = (int)prepositions.spliterator().getExactSizeIfKnown();
+        int randPrepositionNum = random.nextInt(prepositionLength);
+        List<String> prepositionList = new ArrayList<>();
+        for (Prepositions preposition : prepositions) {
+            prepositionList.add(preposition.getPreposition());
+        }
+        return prepositionList.get(randPrepositionNum);
     }
 
     @PostMapping
@@ -94,72 +139,12 @@ public class SongTitleController {
 
     @GetMapping
     public String getAllSongTitles() {
-        Random random = new Random();
-
-        int randomPos = random.nextInt(2);
+        int randomPos = this.random.nextInt(2);
 
         if (randomPos == 0) {
-            Iterable<Nouns> nouns = nounDao.findAll();
-            int nounLength = (int)nouns.spliterator().getExactSizeIfKnown();
-            int randNounNum = random.nextInt(nounLength);
-            List<String> nounList = new ArrayList<>();
-            for (Nouns noun : nouns) {
-                nounList.add(noun.getSongTitle());
-            }
-
-            Iterable<Verbs> verbs = verbDao.findAll();
-            int verbLength = (int)verbs.spliterator().getExactSizeIfKnown();
-            int randVerbNum = random.nextInt(verbLength);
-            List<String> verbList = new ArrayList<>();
-            for (Verbs verb : verbs) {
-                verbList.add(verb.getVerb());
-            }
-            return verbList.get(randVerbNum) + " " + nounList.get(randNounNum);
+            return findVerb() + " " + findNoun();
         } else {
-            Iterable<Nouns> nouns = nounDao.findAll();
-            int nounLength = (int)nouns.spliterator().getExactSizeIfKnown();
-            int randNounNum = random.nextInt(nounLength);
-            List<String> nounList = new ArrayList<>();
-            for (Nouns noun : nouns) {
-                nounList.add(noun.getSongTitle());
-            }
-
-            Iterable<Verbs> verbs = verbDao.findAll();
-            int verbLength = (int)verbs.spliterator().getExactSizeIfKnown();
-            int randVerbNum = random.nextInt(verbLength);
-            List<String> verbList = new ArrayList<>();
-            for (Verbs verb : verbs) {
-                verbList.add(verb.getVerb());
-            }
-
-            Iterable<Pronouns> pronouns = pronounDao.findAll();
-            int pronounLength = (int)pronouns.spliterator().getExactSizeIfKnown();
-            int randPronounNum = random.nextInt(pronounLength);
-            List<String> pronounList = new ArrayList<>();
-            for (Pronouns pronoun : pronouns) {
-                pronounList.add(pronoun.getPronoun());
-            }
-
-            Iterable<Prepositions> prepositions = prepositionDao.findAll();
-            int prepositionLength = (int)prepositions.spliterator().getExactSizeIfKnown();
-            int randPrepositionNum = random.nextInt(prepositionLength);
-            List<String> prepositionList = new ArrayList<>();
-            for (Prepositions preposition : prepositions) {
-                prepositionList.add(preposition.getPreposition());
-            }
-
-            Iterable<Determiners> determiners = determinerDao.findAll();
-            int determinerLength = (int)determiners.spliterator().getExactSizeIfKnown();
-            int randDeterminerNum = random.nextInt(determinerLength);
-            List<String> determinerList = new ArrayList<>();
-            for (Determiners determiner : determiners) {
-                determinerList.add(determiner.getDeterminer());
-            }
-            return verbList.get(randVerbNum) + " " +
-                    determinerList.get(randDeterminerNum) + " " +
-                    nounList.get(randNounNum) + " " +
-                    pronounList.get(randPronounNum) + " " +
-                    prepositionList.get(randPrepositionNum);
+            return findVerb() + " " + findDeterminer() + " " + findNoun();
         }
     }
 //

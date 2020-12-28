@@ -139,12 +139,16 @@ public class SongTitleController {
 
     @GetMapping
     public String getAllSongTitles() {
-        int randomPos = this.random.nextInt(2);
+        int randomPos = this.random.nextInt(4);
 
         if (randomPos == 0) {
             return findVerb() + " " + findNoun();
-        } else {
+        } else if (randomPos == 1) {
             return findVerb() + " " + findDeterminer() + " " + findNoun();
+        } else if (randomPos == 2) {
+            return findVerb() + " " + findPreposition() + " " + findNoun();
+        } else {
+            return findNoun() + " " + findPreposition() + " " + findPronoun();
         }
     }
 //

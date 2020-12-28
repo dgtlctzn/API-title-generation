@@ -38,31 +38,32 @@ public class SongTitleController {
         int prepositionsNum = 0;
         for (Sentence sentence : doc.sentences()) {
             for (int i = 0; i < sentence.length(); i++) {
-                if (sentence.posTag(i).contains("NN")) {
+                String pos = sentence.posTag(i);
+                if (pos.contains("NN")) {
                     // save nouns "NN" to noun table
                     Nouns noun = new Nouns();
                     noun.setNoun(sentence.word(i));
                     nounDao.save(noun);
                     nounsNum += 1;
-                } else if (sentence.posTag(i).contains("VB")) {
+                } else if (pos.contains("VB")) {
                     // save verbs "VB" to verb table
                     Verbs verb = new Verbs();
                     verb.setVerb(sentence.word(i));
                     verbDao.save(verb);
                     verbsNum += 1;
-                } else if (sentence.posTag(i).contains("PRP")) {
+                } else if (pos.contains("PRP")) {
                     // save pronouns "PRP" to pronoun table
                     Pronouns pronoun = new Pronouns();
                     pronoun.setPronoun(sentence.word(i));
                     pronounDao.save(pronoun);
                     pronounsNum += 1;
-                } else if (sentence.posTag(i).contains("DT")) {
+                } else if (pos.contains("DT")) {
                     // save determiners "DT" to determiner table
                     Determiners determiner = new Determiners();
                     determiner.setDeterminer(sentence.word(i));
                     determinerDao.save(determiner);
                     determinersNum += 1;
-                } else if (sentence.posTag(i).contains("IN")) {
+                } else if (pos.contains("IN")) {
                     // save prepositions "IN" to preposition table
                     Prepositions preposition = new Prepositions();
                     preposition.setPreposition(sentence.word(i));

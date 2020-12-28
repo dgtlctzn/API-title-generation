@@ -1,14 +1,7 @@
 package com.example.titlegen.api;
 
-import com.example.titlegen.dao.DeterminerDao;
-import com.example.titlegen.dao.NounDao;
-import com.example.titlegen.dao.PronounDao;
-import com.example.titlegen.dao.VerbDao;
-import com.example.titlegen.model.Nouns;
-import com.example.titlegen.model.SongTitles;
-import com.example.titlegen.model.Verbs;
-import com.example.titlegen.model.Pronouns;
-import com.example.titlegen.model.Determiners;
+import com.example.titlegen.dao.*;
+import com.example.titlegen.model.*;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +21,8 @@ public class SongTitleController {
     private PronounDao pronounDao;
     @Autowired
     private DeterminerDao determinerDao;
+    @Autowired
+    private PrepositionDao prepositionDao;
 
     @PostMapping
     public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles,
@@ -40,6 +35,7 @@ public class SongTitleController {
         int verbsNum = 0;
         int pronounsNum = 0;
         int determinersNum = 0;
+        int prepositionsNum = 0;
         for (Sentence sentence : doc.sentences()) {
             for (int i = 0; i < sentence.length(); i++) {
                 if (sentence.posTag(i).contains("NN")) {
@@ -66,13 +62,20 @@ public class SongTitleController {
                     determiner.setDeterminer(sentence.word(i));
                     determinerDao.save(determiner);
                     determinersNum += 1;
+                } else if (sentence.posTag(i).contains("IN")) {
+                    // save prepositions "IN" to preposition table
+                    Prepositions preposition = new Prepositions();
+                    preposition.setPreposition(sentence.word(i));
+                    prepositionDao.save(preposition);
+                    prepositionsNum += 1;
                 }
             }
         }
         return "Saved " + nounsNum + " nouns\n" +
                 verbsNum + " verbs\n" +
                 pronounsNum + " pronouns\n" +
-                determinersNum + " determiners\n";
+                determinersNum + " determiners\n" +
+                prepositionsNum + " prepositions";
     }
 
     @GetMapping

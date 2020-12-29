@@ -26,4 +26,5 @@ public class Determiners {
     public String getDeterminer() {
         return this.determiner;
     }
+
 }

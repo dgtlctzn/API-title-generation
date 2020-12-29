@@ -10,6 +10,7 @@ public class Nouns {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
     private String noun;
+    private String type;
 
     public Integer getId() {
         return this.id;
@@ -23,7 +24,11 @@ public class Nouns {
         this.noun = noun;
     }
 
-    public String getSongTitle() {
+    public String getNoun() {
         return this.noun;
     }
+
+    public void setType(String type) {this.type = type;}
+
+    public String getType() { return this.type;}
 }

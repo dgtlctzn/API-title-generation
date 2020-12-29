@@ -27,25 +27,33 @@ public class SongTitleController {
     public Random random = new Random();
 
     // functions to randomly choose a word from the db by word type
-    public String findNoun() {
+    public String findNoun(Boolean plural) {
         Iterable<Nouns> nouns = nounDao.findAll();
-        int nounLength = (int)nouns.spliterator().getExactSizeIfKnown();
-        int randNounNum = this.random.nextInt(nounLength);
         List<String> nounList = new ArrayList<>();
         for (Nouns noun : nouns) {
-            nounList.add(noun.getSongTitle());
+            if (plural && noun.getType().equals("NNS")) {
+                nounList.add(noun.getNoun());
+            } else if (!plural) {
+                nounList.add(noun.getNoun());
+            }
         }
+        int nounLength = nounList.size();
+        int randNounNum = this.random.nextInt(nounLength);
         return nounList.get(randNounNum);
     }
 
-    public String findVerb() {
+    public String findVerb(Boolean gerund) {
         Iterable<Verbs> verbs = verbDao.findAll();
-        int verbLength = (int)verbs.spliterator().getExactSizeIfKnown();
-        int randVerbNum = random.nextInt(verbLength);
         List<String> verbList = new ArrayList<>();
         for (Verbs verb : verbs) {
-            verbList.add(verb.getVerb());
+            if (gerund && verb.getType().equals("VBG")) {
+                verbList.add(verb.getVerb());
+            } else if (!gerund) {
+                verbList.add(verb.getVerb());
+            }
         }
+        int verbLength = verbList.size();
+        int randVerbNum = random.nextInt(verbLength);
         return verbList.get(randVerbNum);
     }
 
@@ -101,12 +109,14 @@ public class SongTitleController {
                     // save nouns "NN" to noun table
                     Nouns noun = new Nouns();
                     noun.setNoun(sentence.word(i));
+                    noun.setType(sentence.posTag(i));
                     nounDao.save(noun);
                     nounsNum += 1;
                 } else if (pos.contains("VB")) {
                     // save verbs "VB" to verb table
                     Verbs verb = new Verbs();
                     verb.setVerb(sentence.word(i));
+                    verb.setType(sentence.posTag(i));
                     verbDao.save(verb);
                     verbsNum += 1;
                 } else if (pos.contains("PRP$")) {
@@ -143,13 +153,13 @@ public class SongTitleController {
 
         switch(randomPos) {
             case 0:
-                return findVerb() + " " + findNoun();
+                return findVerb(false) + " " + findNoun(false);
             case 1:
-                return findVerb() + " " + findDeterminer() + " " + findNoun();
+                return findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
             case 2:
-                return findVerb() + " " + findPreposition() + " " + findNoun();
+                return findVerb(false) + " " + findPreposition() + " " + findNoun(false);
             default:
-                return findNoun() + " " + findPreposition() + " " + findPronoun() + " " + findNoun();
+                return findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
         }
     }
 //

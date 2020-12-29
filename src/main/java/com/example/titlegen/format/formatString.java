@@ -1,11 +1,14 @@
 package com.example.titlegen.format;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class formatString {
     Boolean error;
-    String data;
+    Object[] data;
     String message;
 
-    public formatString(Boolean error, String data, String message) {
+    public formatString(Boolean error, Object[] data, String message) {
         this.error = error;
         this.data = data;
         this.message = message;

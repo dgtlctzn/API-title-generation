@@ -155,32 +155,43 @@ public class SongTitleController {
                 pronounsNum + " pronouns\n" +
                 determinersNum + " determiners\n" +
                 prepositionsNum + " prepositions";
-        formatString format = new formatString(false, savedWords, "words added to database");
+        formatString format = new formatString(false, null, "words added to database");
         Gson gson = new Gson();
         String json = gson.toJson(format);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getAllSongTitles() {
-        int randomPos = this.random.nextInt(4);
-        String songTitle;
-
-        switch(randomPos) {
-            case 0:
-                songTitle = findVerb(false) + " " + findNoun(false);
-                break;
-            case 1:
-                songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
-                break;
-            case 2:
-                songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
-                break;
-            default:
-                songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
-                break;
+    public ResponseEntity<Object> getAllSongTitles(@RequestParam HashMap<String, String> params) {
+        List<String> songTitles = new ArrayList<>();
+        int num;
+        if (params.containsKey("no")) {
+            num = Integer.parseInt(params.get("no"));
+        } else {
+            num = 1;
         }
-        formatString format = new formatString(false, songTitle, "song title generated");
+        for (int i = 0; i < num; i++) {
+            String songTitle;
+            int randomPos = this.random.nextInt(4);
+            switch(randomPos) {
+                case 0:
+                    songTitle = findVerb(false) + " " + findNoun(false);
+                    break;
+                case 1:
+                    songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
+                    break;
+                case 2:
+                    songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
+                    break;
+                default:
+                    songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
+                    break;
+            }
+            songTitles.add(songTitle);
+        }
+
+
+        formatString format = new formatString(false, songTitles.toArray(), "song title generated");
         Gson gson = new Gson();
         String json = gson.toJson(format);
         return new ResponseEntity<>(json, HttpStatus.OK);

@@ -141,14 +141,15 @@ public class SongTitleController {
     public String getAllSongTitles() {
         int randomPos = this.random.nextInt(4);
 
-        if (randomPos == 0) {
-            return findVerb() + " " + findNoun();
-        } else if (randomPos == 1) {
-            return findVerb() + " " + findDeterminer() + " " + findNoun();
-        } else if (randomPos == 2) {
-            return findVerb() + " " + findPreposition() + " " + findNoun();
-        } else {
-            return findNoun() + " " + findPreposition() + " " + findPronoun() + " " + findNoun();
+        switch(randomPos) {
+            case 0:
+                return findVerb() + " " + findNoun();
+            case 1:
+                return findVerb() + " " + findDeterminer() + " " + findNoun();
+            case 2:
+                return findVerb() + " " + findPreposition() + " " + findNoun();
+            default:
+                return findNoun() + " " + findPreposition() + " " + findPronoun() + " " + findNoun();
         }
     }
 //

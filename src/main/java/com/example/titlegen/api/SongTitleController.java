@@ -28,6 +28,8 @@ public class SongTitleController {
     private DeterminerDao determinerDao;
     @Autowired
     private PrepositionDao prepositionDao;
+    @Autowired
+    private StartupVerbsDao startupVerbsDao;
 
     public Random random = new Random();
 
@@ -45,6 +47,17 @@ public class SongTitleController {
         int nounLength = nounList.size();
         int randNounNum = this.random.nextInt(nounLength);
         return nounList.get(randNounNum);
+    }
+
+    public String findStartupVerb() {
+        Iterable<StartupVerbs> verbs = startupVerbsDao.findAll();
+        List<String> verbList = new ArrayList<>();
+        for (StartupVerbs verb : verbs) {
+            verbList.add(verb.getVerb());
+        }
+        int verbLength = verbList.size();
+        int randVerbNum = random.nextInt(verbLength);
+        return verbList.get(randVerbNum);
     }
 
     public String findVerb(Boolean gerund) {

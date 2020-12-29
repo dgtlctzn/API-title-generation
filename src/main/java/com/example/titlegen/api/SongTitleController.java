@@ -3,11 +3,9 @@ package com.example.titlegen.api;
 import com.example.titlegen.dao.*;
 import com.example.titlegen.model.*;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -150,12 +148,15 @@ public class SongTitleController {
                 }
             }
         }
-        String savedWords = "Saved " + nounsNum + " nouns\n" +
-                verbsNum + " verbs\n" +
-                pronounsNum + " pronouns\n" +
-                determinersNum + " determiners\n" +
-                prepositionsNum + " prepositions";
-        formatString format = new formatString(false, null, "words added to database");
+        // list of word types added to db
+        List<String> namesSaved = new ArrayList<>();
+        namesSaved.add(nounsNum + " nouns");
+        namesSaved.add(verbsNum + " verbs");
+        namesSaved.add(pronounsNum + " pronouns");
+        namesSaved.add(determinersNum + " determiners");
+        namesSaved.add(prepositionsNum + " prepositions");
+
+        formatString format = new formatString(false, namesSaved.toArray(), "words saved to database");
         Gson gson = new Gson();
         String json = gson.toJson(format);
         return new ResponseEntity<>(json, HttpStatus.OK);
@@ -163,10 +164,25 @@ public class SongTitleController {
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAllSongTitles(@RequestParam HashMap<String, String> params) {
+        Gson gson = new Gson();
+
         List<String> songTitles = new ArrayList<>();
         int num;
         if (params.containsKey("no")) {
-            num = Integer.parseInt(params.get("no"));
+            // allows for optional number of song titles to be generated
+            try {
+                num = Integer.parseInt(params.get("no"));
+                if (num > 15) {
+                    // limits song title generation to 15 titles
+                    formatString format = new formatString(true, null, "Results queried must be 15 or less at a time");
+                    String json = gson.toJson(format);
+                    return new ResponseEntity<>(json, HttpStatus.NOT_ACCEPTABLE);
+                }
+            } catch (Exception e) {
+                formatString format = new formatString(true, null, "invalid param");
+                String json = gson.toJson(format);
+                return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
+            }
         } else {
             num = 1;
         }
@@ -191,53 +207,8 @@ public class SongTitleController {
         }
 
 
-        formatString format = new formatString(false, songTitles.toArray(), "song title generated");
-        Gson gson = new Gson();
+        formatString format = new formatString(false, songTitles.toArray(), "song title(s) generated");
         String json = gson.toJson(format);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
-//
-//    @Autowired
-//    public SongTitleController(SongTitleService songTitleService) {
-//        this.songTitleService = songTitleService;
-//    }
-//
-//    @PostMapping
-//    public void addSongTitle(@Validated @NonNull @RequestBody SongTitle songTitle) {
-//        songTitleService.addSongTitle(songTitle);
-//    }
-//
-//    @GetMapping
-//    public List<SongTitle> getAllSongTitles(@RequestParam("id") Optional<UUID> id) {
-//        if (id.isPresent()) {
-//            List<SongTitle> foundList = new ArrayList<>();
-//            SongTitle foundId = songTitleService.getSongTitleById(id.get()).orElse(null);
-//            foundList.add(foundId);
-//            return foundList;
-//        }
-//        return songTitleService.getAllSongTitles();
-//    }
-//
-//    @GetMapping
-//    public List<SongTitles> getSongTitleById(@RequestParam("id") Optional<Integer> id) {
-//        if (id.isPresent()) {
-//            List<SongTitles> foundList = new ArrayList<>();
-//            Optional<SongTitles> x = songTitledao.findById(id.get());
-//            if (x.isPresent()) {
-//                foundList.add(x.get());
-//                return foundList;
-//            }
-//        }
-//        return (List<SongTitles>) songTitledao.findAll();
-//    }
-//
-//    @DeleteMapping(path = "{id}")
-//    public void deleteSongTitleById(@PathVariable("id") UUID id) {
-//        songTitleService.deleteSongTitle(id);
-//    }
-//
-//    @PutMapping(path = "{id}")
-//    public void updateSongTitle(@PathVariable("id") UUID id, @Validated @NonNull @RequestBody SongTitle songTitleToUpdate) {
-//        songTitleService.updateSongTitle(id, songTitleToUpdate);
-//    }
 }

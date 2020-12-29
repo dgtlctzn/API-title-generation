@@ -97,11 +97,14 @@ public class SongTitleController {
         return prepositionList.get(randPrepositionNum);
     }
 
-    @PostMapping
-    public @ResponseBody String addNewSongTitle (@RequestBody SongTitles songTitles,
+    @PostMapping(produces= MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseEntity<Object> addNewSongTitle (@RequestBody SongTitles songTitles,
                                                  @RequestHeader Map<String,String> headers) {
         if (!headers.get("authorization").equals("-2E]2n[Iy6<7Oma")) {
-            return "Invalid Key";
+            formatString format = new formatString(true, null, "invalid token");
+            Gson gson = new Gson();
+            String json = gson.toJson(format);
+            return new ResponseEntity<>(json, HttpStatus.FORBIDDEN);
         };
         Document doc = new Document(songTitles.getName());
         int nounsNum = 0;
@@ -147,19 +150,21 @@ public class SongTitleController {
                 }
             }
         }
-        return "Saved " + nounsNum + " nouns\n" +
+        String savedWords = "Saved " + nounsNum + " nouns\n" +
                 verbsNum + " verbs\n" +
                 pronounsNum + " pronouns\n" +
                 determinersNum + " determiners\n" +
                 prepositionsNum + " prepositions";
+        formatString format = new formatString(false, savedWords, "words added to database");
+        Gson gson = new Gson();
+        String json = gson.toJson(format);
+        return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAllSongTitles() {
         int randomPos = this.random.nextInt(4);
-        Gson gson = new Gson();
         String songTitle;
-//        formatString format;
 
         switch(randomPos) {
             case 0:
@@ -175,7 +180,8 @@ public class SongTitleController {
                 songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
                 break;
         }
-        formatString format = new formatString(false, songTitle, "success");
+        formatString format = new formatString(false, songTitle, "song title generated");
+        Gson gson = new Gson();
         String json = gson.toJson(format);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }

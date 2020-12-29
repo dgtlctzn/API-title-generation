@@ -112,7 +112,7 @@ public class SongTitleController {
     public @ResponseBody ResponseEntity<Object> addNewSongTitle (@RequestBody SongTitles songTitles,
                                                  @RequestHeader Map<String,String> headers) {
         if (!headers.get("authorization").equals("-2E]2n[Iy6<7Oma")) {
-            formatString format = new formatString(true, null, "invalid token");
+            formatString format = new formatString(true, null, null,"invalid token");
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.FORBIDDEN);
@@ -171,7 +171,7 @@ public class SongTitleController {
             namesSaved.add(determinersNum + " determiners");
             namesSaved.add(prepositionsNum + " prepositions");
 
-            formatString format = new formatString(false, namesSaved.toArray(), "words saved to database");
+            formatString format = new formatString(false, namesSaved.toArray(), "song", "words saved to database");
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.OK);
@@ -188,12 +188,12 @@ public class SongTitleController {
                     startupVerbNum += 1;
                 }
             }
-            formatString format = new formatString(false, null, String.format("%d words saved to database", startupVerbNum));
+            formatString format = new formatString(false, null, "startup", String.format("%d words saved to database", startupVerbNum));
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.OK);
         } else {
-            formatString format = new formatString(true, null, "title type not specified in header");
+            formatString format = new formatString(true, null, null, "title type not specified in header");
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
@@ -209,7 +209,7 @@ public class SongTitleController {
         try {
             type = params.get("type");
         } catch (Exception e) {
-            formatString format = new formatString(true, null, "missing title type in params");
+            formatString format = new formatString(true, null, null, "missing title type in params");
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
         }
@@ -219,12 +219,12 @@ public class SongTitleController {
                 num = Integer.parseInt(params.get("no"));
                 if (num > 15) {
                     // limits song title generation to 15 titles
-                    formatString format = new formatString(true, null, "Results queried must be 15 or less at a time");
+                    formatString format = new formatString(true, null, null, "Results queried must be 15 or less at a time");
                     String json = gson.toJson(format);
                     return new ResponseEntity<>(json, HttpStatus.NOT_ACCEPTABLE);
                 }
             } catch (Exception e) {
-                formatString format = new formatString(true, null, "invalid param");
+                formatString format = new formatString(true, null, null, "invalid param");
                 String json = gson.toJson(format);
                 return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
             }
@@ -232,6 +232,7 @@ public class SongTitleController {
             num = 1;
         }
         if (type.equals("song")) {
+            // song title generation
             List<String> songTitles = new ArrayList<>();
             for (int i = 0; i < num; i++) {
                 String songTitle;
@@ -254,10 +255,11 @@ public class SongTitleController {
             }
 
 
-            formatString format = new formatString(false, songTitles.toArray(), "song title(s) generated");
+            formatString format = new formatString(false, songTitles.toArray(), "song", String.format("%d song title(s) generated", songTitles.size()));
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.OK);
         } else {
+            // startup title generation
             List<String> startups = new ArrayList<>();
 
             List<String> vowels = new LinkedList<>();
@@ -306,7 +308,7 @@ public class SongTitleController {
                 }
 
             }
-            formatString format = new formatString(false, startups.toArray(), "startup title(s) generated");
+            formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.OK);
         }

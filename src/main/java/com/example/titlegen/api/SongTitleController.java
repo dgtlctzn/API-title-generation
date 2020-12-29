@@ -2,10 +2,17 @@ package com.example.titlegen.api;
 
 import com.example.titlegen.dao.*;
 import com.example.titlegen.model.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.titlegen.format.formatString;
 
 import java.util.*;
 
@@ -147,20 +154,30 @@ public class SongTitleController {
                 prepositionsNum + " prepositions";
     }
 
-    @GetMapping
-    public String getAllSongTitles() {
+    @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getAllSongTitles() {
         int randomPos = this.random.nextInt(4);
+        Gson gson = new Gson();
+        String songTitle;
+//        formatString format;
 
         switch(randomPos) {
             case 0:
-                return findVerb(false) + " " + findNoun(false);
+                songTitle = findVerb(false) + " " + findNoun(false);
+                break;
             case 1:
-                return findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
+                songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
+                break;
             case 2:
-                return findVerb(false) + " " + findPreposition() + " " + findNoun(false);
+                songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
+                break;
             default:
-                return findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
+                songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
+                break;
         }
+        formatString format = new formatString(false, songTitle, "success");
+        String json = gson.toJson(format);
+        return new ResponseEntity<>(json, HttpStatus.OK);
     }
 //
 //    @Autowired

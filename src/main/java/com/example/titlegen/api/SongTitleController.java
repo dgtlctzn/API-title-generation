@@ -259,8 +259,52 @@ public class SongTitleController {
             return new ResponseEntity<>(json, HttpStatus.OK);
         } else {
             List<String> startups = new ArrayList<>();
+
+            List<String> vowels = new LinkedList<>();
+            vowels.add("a");
+            vowels.add("e");
+            vowels.add("i");
+            vowels.add("o");
+            vowels.add("u");
+
             for (int i = 0; i < num; i++) {
-                startups.add(findStartupVerb());
+                String modified = "";
+                int randomStartup = this.random.nextInt(3);
+                switch(randomStartup) {
+                    case 0:
+                        modified += findStartupVerb();
+                        modified += ".io";
+                        startups.add(modified);
+                        break;
+                    case 1:
+                        modified += findStartupVerb();
+                        modified += ".ai";
+                        startups.add(modified);
+                        break;
+                    case 2:
+                        String[] startup = findStartupVerb().split("");
+                        String lastLetter = startup[startup.length - 1];
+                        if (lastLetter.equals("y")) {
+                            modified += findStartupVerb().replace("y", "i");
+                        } else if (!vowels.contains(lastLetter)){
+                            modified += findStartupVerb() + "ify";
+                        } else {
+                            String[] arr = findStartupVerb().split("");
+                            StringBuilder c = new StringBuilder();
+                            boolean stop = false;
+                            for (int j = arr.length - 2; j >= 0; j--) {
+                                if (!stop && vowels.contains(arr[j])) {
+                                    stop = true;
+                                } else {
+                                    c.append(arr[j]);
+                                }
+                            }
+                            modified += c.reverse().toString();
+                        }
+                        startups.add(modified);
+                        break;
+                }
+
             }
             formatString format = new formatString(false, startups.toArray(), "startup title(s) generated");
             String json = gson.toJson(format);

@@ -14,7 +14,7 @@ import com.example.titlegen.format.formatString;
 
 import java.util.*;
 
-@RequestMapping("/api/v1/songtitle")
+@RequestMapping("/api/v1/titlegen")
 @RestController
 public class SongTitleController {
 

@@ -208,109 +208,111 @@ public class SongTitleController {
         String type;
         try {
             type = params.get("type");
+
+            if (params.containsKey("no")) {
+                // allows for optional number of song titles to be generated
+                try {
+                    num = Integer.parseInt(params.get("no"));
+                    if (num > 15) {
+                        // limits song title generation to 15 titles
+                        formatString format = new formatString(true, null, null, "Results queried must be 15 or less at a time");
+                        String json = gson.toJson(format);
+                        return new ResponseEntity<>(json, HttpStatus.NOT_ACCEPTABLE);
+                    }
+                } catch (Exception e) {
+                    formatString format = new formatString(true, null, null, "invalid param");
+                    String json = gson.toJson(format);
+                    return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                num = 1;
+            }
+            if (type.equals("song")) {
+                // song title generation
+                List<String> songTitles = new ArrayList<>();
+                for (int i = 0; i < num; i++) {
+                    String songTitle;
+                    int randomPos = this.random.nextInt(4);
+                    switch(randomPos) {
+                        case 0:
+                            songTitle = findVerb(false) + " " + findNoun(false);
+                            break;
+                        case 1:
+                            songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
+                            break;
+                        case 2:
+                            songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
+                            break;
+                        default:
+                            songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
+                            break;
+                    }
+                    songTitles.add(songTitle);
+                }
+
+
+                formatString format = new formatString(false, songTitles.toArray(), "song", String.format("%d song title(s) generated", songTitles.size()));
+                String json = gson.toJson(format);
+                return new ResponseEntity<>(json, HttpStatus.OK);
+            } else {
+                // startup title generation
+                List<String> startups = new ArrayList<>();
+
+                List<String> vowels = new LinkedList<>();
+                vowels.add("a");
+                vowels.add("e");
+                vowels.add("i");
+                vowels.add("o");
+                vowels.add("u");
+
+                for (int i = 0; i < num; i++) {
+                    String modified = "";
+                    int randomStartup = this.random.nextInt(3);
+                    switch(randomStartup) {
+                        case 0:
+                            modified += findStartupVerb();
+                            modified += ".io";
+                            startups.add(modified);
+                            break;
+                        case 1:
+                            modified += findStartupVerb();
+                            modified += ".ai";
+                            startups.add(modified);
+                            break;
+                        case 2:
+                            String[] startup = findStartupVerb().split("");
+                            String lastLetter = startup[startup.length - 1];
+                            if (lastLetter.equals("y")) {
+                                modified += findStartupVerb().replace("y", "i");
+                            } else if (!vowels.contains(lastLetter)){
+                                modified += findStartupVerb() + "ify";
+                            } else {
+                                String[] arr = findStartupVerb().split("");
+                                StringBuilder c = new StringBuilder();
+                                boolean stop = false;
+                                for (int j = arr.length - 2; j >= 0; j--) {
+                                    if (!stop && vowels.contains(arr[j])) {
+                                        stop = true;
+                                    } else {
+                                        c.append(arr[j]);
+                                    }
+                                }
+                                modified += c.reverse().toString();
+                            }
+                            startups.add(modified);
+                            break;
+                    }
+
+                }
+                formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
+                String json = gson.toJson(format);
+                return new ResponseEntity<>(json, HttpStatus.OK);
+            }
         } catch (Exception e) {
             formatString format = new formatString(true, null, null, "missing title type in params");
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
         }
-        if (params.containsKey("no")) {
-            // allows for optional number of song titles to be generated
-            try {
-                num = Integer.parseInt(params.get("no"));
-                if (num > 15) {
-                    // limits song title generation to 15 titles
-                    formatString format = new formatString(true, null, null, "Results queried must be 15 or less at a time");
-                    String json = gson.toJson(format);
-                    return new ResponseEntity<>(json, HttpStatus.NOT_ACCEPTABLE);
-                }
-            } catch (Exception e) {
-                formatString format = new formatString(true, null, null, "invalid param");
-                String json = gson.toJson(format);
-                return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            num = 1;
-        }
-        if (type.equals("song")) {
-            // song title generation
-            List<String> songTitles = new ArrayList<>();
-            for (int i = 0; i < num; i++) {
-                String songTitle;
-                int randomPos = this.random.nextInt(4);
-                switch(randomPos) {
-                    case 0:
-                        songTitle = findVerb(false) + " " + findNoun(false);
-                        break;
-                    case 1:
-                        songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
-                        break;
-                    case 2:
-                        songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
-                        break;
-                    default:
-                        songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
-                        break;
-                }
-                songTitles.add(songTitle);
-            }
-
-
-            formatString format = new formatString(false, songTitles.toArray(), "song", String.format("%d song title(s) generated", songTitles.size()));
-            String json = gson.toJson(format);
-            return new ResponseEntity<>(json, HttpStatus.OK);
-        } else {
-            // startup title generation
-            List<String> startups = new ArrayList<>();
-
-            List<String> vowels = new LinkedList<>();
-            vowels.add("a");
-            vowels.add("e");
-            vowels.add("i");
-            vowels.add("o");
-            vowels.add("u");
-
-            for (int i = 0; i < num; i++) {
-                String modified = "";
-                int randomStartup = this.random.nextInt(3);
-                switch(randomStartup) {
-                    case 0:
-                        modified += findStartupVerb();
-                        modified += ".io";
-                        startups.add(modified);
-                        break;
-                    case 1:
-                        modified += findStartupVerb();
-                        modified += ".ai";
-                        startups.add(modified);
-                        break;
-                    case 2:
-                        String[] startup = findStartupVerb().split("");
-                        String lastLetter = startup[startup.length - 1];
-                        if (lastLetter.equals("y")) {
-                            modified += findStartupVerb().replace("y", "i");
-                        } else if (!vowels.contains(lastLetter)){
-                            modified += findStartupVerb() + "ify";
-                        } else {
-                            String[] arr = findStartupVerb().split("");
-                            StringBuilder c = new StringBuilder();
-                            boolean stop = false;
-                            for (int j = arr.length - 2; j >= 0; j--) {
-                                if (!stop && vowels.contains(arr[j])) {
-                                    stop = true;
-                                } else {
-                                    c.append(arr[j]);
-                                }
-                            }
-                            modified += c.reverse().toString();
-                        }
-                        startups.add(modified);
-                        break;
-                }
-
-            }
-            formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
-            String json = gson.toJson(format);
-            return new ResponseEntity<>(json, HttpStatus.OK);
-        }
     }
+
 }

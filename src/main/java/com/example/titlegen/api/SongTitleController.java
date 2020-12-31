@@ -254,7 +254,7 @@ public class SongTitleController {
                 formatString format = new formatString(false, songTitles.toArray(), "song", String.format("%d song title(s) generated", songTitles.size()));
                 String json = gson.toJson(format);
                 return new ResponseEntity<>(json, HttpStatus.OK);
-            } else {
+            } else if (type.equals("startup")) {
                 // startup title generation
                 List<String> startups = new ArrayList<>();
 
@@ -318,6 +318,10 @@ public class SongTitleController {
                 formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
                 String json = gson.toJson(format);
                 return new ResponseEntity<>(json, HttpStatus.OK);
+            } else {
+                formatString format = new formatString(true, null, null, "invalid title type");
+                String json = gson.toJson(format);
+                return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             formatString format = new formatString(true, null, null, "missing title type in params");

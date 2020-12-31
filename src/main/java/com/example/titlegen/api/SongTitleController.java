@@ -209,6 +209,26 @@ public class SongTitleController {
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.OK);
+        } else if (headers.containsKey("type") && headers.get("type").equals("book")) {
+            // title generation for startups
+            int bookNum = 0;
+            Document doc = new Document(songTitles.getName());
+            for (Sentence sentence : doc.sentences()) {
+                for (int i = 0; i < sentence.length(); i++) {
+                    String pos = sentence.posTag(i);
+                    if (pos.contains("NN")) {
+                        BookNouns bookNoun = new BookNouns();
+                        bookNoun.setNoun(sentence.word(i));
+                        bookNoun.setType(pos);
+                        bookNounDao.save(bookNoun);
+                        bookNum += 1;
+                    }
+                }
+            }
+            formatString format = new formatString(false, null, "book", String.format("%d words saved to database", bookNum));
+            Gson gson = new Gson();
+            String json = gson.toJson(format);
+            return new ResponseEntity<>(json, HttpStatus.OK);
         } else {
             formatString format = new formatString(true, null, null, "title type not specified in header");
             Gson gson = new Gson();
@@ -345,8 +365,27 @@ public class SongTitleController {
                     List<String> books = new ArrayList<>();
 
                     for (int i = 0; i < num; i++) {
-                        booktitle = findBookNoun("NNS") + findPreposition() + findPronoun() + findBookNoun("NNS");
-                        books.add(booktitle);
+                        int randomBook = this.random.nextInt(4);
+
+                        switch(randomBook) {
+                            case 0:
+                                booktitle = findPronoun() + " " + findBookNoun("");
+                                books.add(booktitle);
+                                break;
+                            case 1:
+                                booktitle = findBookNoun("") + " " + findPreposition() + " " + findPronoun() + " " + findBookNoun("NNS");
+                                books.add(booktitle);
+                                break;
+                            case 2:
+                                booktitle = findVerb("VBG") + " " + findPreposition() + " " + findDeterminer() + " " + findBookNoun("NNS");
+                                books.add(booktitle);
+                                break;
+                            case 3:
+                                booktitle = "The " + findBookNoun("NNP") + "'s " + findBookNoun("");
+                                books.add(booktitle);
+                                break;
+                        }
+
                     }
                     format = new formatString(false, books.toArray(), "book", String.format("%d book title(s) generated", books.size()));
                     json = gson.toJson(format);

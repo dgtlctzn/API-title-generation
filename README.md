@@ -10,14 +10,14 @@ The following GET endpoint allows queries for title type and amount of titles to
 
 Param | Required | Description
 ------|----------|------------
-no | false | number of titles generated. An empty param will return one title
+no | false | number of titles generated. An empty param will return one title. A max of 15 titles can be queried at a time.
 type | true | type of generated title: `song`, `book`, or `startup`.
 
 The format for the returned JSON response is as follows:
 
 ```
 {
-    "error": Boolean
+    "error": Boolean,
     "data": Array of Generated Titles,
     "type": String,
     "message": String

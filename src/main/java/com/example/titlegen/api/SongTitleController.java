@@ -267,42 +267,53 @@ public class SongTitleController {
 
                 for (int i = 0; i < num; i++) {
                     String modified = "";
-                    int randomStartup = this.random.nextInt(3);
+                    String name = findStartupVerb();
+                    int randomStartup = this.random.nextInt(4);
+
                     switch(randomStartup) {
                         case 0:
-                            modified += findStartupVerb();
+                            modified += name;
                             modified += ".io";
                             startups.add(modified);
                             break;
                         case 1:
-                            modified += findStartupVerb();
+                            modified += name;
                             modified += ".ai";
                             startups.add(modified);
                             break;
                         case 2:
-                            String[] startup = findStartupVerb().split("");
+                            String[] startup = name.split("");
                             String lastLetter = startup[startup.length - 1];
                             if (lastLetter.equals("y")) {
-                                modified += findStartupVerb().replace("y", "i");
+                                modified += name.replace("y", "i");
                             } else if (!vowels.contains(lastLetter)){
-                                modified += findStartupVerb() + "ify";
+                                modified += name + "ify";
                             } else {
-                                String[] arr = findStartupVerb().split("");
-                                StringBuilder c = new StringBuilder();
-                                boolean stop = false;
-                                for (int j = arr.length - 2; j >= 0; j--) {
-                                    if (!stop && vowels.contains(arr[j])) {
+                                modified += name + "X";
+                            }
+                            startups.add(modified);
+                            break;
+                        case 3:
+                            StringBuilder c = new StringBuilder();
+                            String[] arr = name.split("");
+                            boolean stop = false;
+                            if (arr.length > 6) {
+                                for (int j = arr.length - 1; j >= 0; j--) {
+                                    if (!stop && vowels.contains(arr[j]) && j != arr.length - 1) {
                                         stop = true;
                                     } else {
                                         c.append(arr[j]);
                                     }
                                 }
                                 modified += c.reverse().toString();
+                            } else {
+                                c.append("e-");
+                                c.append(name);
+                                modified += c.toString();
                             }
                             startups.add(modified);
                             break;
-                    }
-
+                        }
                 }
                 formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
                 String json = gson.toJson(format);

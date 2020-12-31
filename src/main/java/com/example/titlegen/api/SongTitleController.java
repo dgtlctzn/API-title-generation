@@ -30,6 +30,8 @@ public class SongTitleController {
     private PrepositionDao prepositionDao;
     @Autowired
     private StartupVerbsDao startupVerbsDao;
+    @Autowired
+    private BookNounDao bookNounDao;
 
     public Random random = new Random();
 
@@ -42,6 +44,21 @@ public class SongTitleController {
                 nounList.add(noun.getNoun());
             } else if (type.equals("")) {
                 nounList.add(noun.getNoun());
+            }
+        }
+        int nounLength = nounList.size();
+        int randNounNum = this.random.nextInt(nounLength);
+        return nounList.get(randNounNum);
+    }
+
+    public String findBookNoun(String type) {
+        Iterable<BookNouns> bookNouns = bookNounDao.findAll();
+        List<String> nounList = new ArrayList<>();
+        for (BookNouns bookNoun : bookNouns) {
+            if (!type.equals("") && bookNoun.getType().equals(type)) {
+                nounList.add(bookNoun.getNoun());
+            } else if (type.equals("")) {
+                nounList.add(bookNoun.getNoun());
             }
         }
         int nounLength = nounList.size();
@@ -318,6 +335,18 @@ public class SongTitleController {
                 formatString format = new formatString(false, startups.toArray(), "startup", String.format("%d startup title(s) generated", startups.size()));
                 String json = gson.toJson(format);
                 return new ResponseEntity<>(json, HttpStatus.OK);
+            } else if (type.equals("book")) {
+                String booktitle;
+                List<String> books = new ArrayList<>();
+
+                for (int i = 0; i < num; i++) {
+                    booktitle = findBookNoun("NNS") + findPreposition() + findPronoun() + findBookNoun("NNS");
+                    books.add(booktitle);
+                }
+                formatString format = new formatString(false, books.toArray(), "book", String.format("%d book title(s) generated", books.size()));
+                String json = gson.toJson(format);
+                return new ResponseEntity<>(json, HttpStatus.OK);
+
             } else {
                 formatString format = new formatString(true, null, null, "invalid title type");
                 String json = gson.toJson(format);

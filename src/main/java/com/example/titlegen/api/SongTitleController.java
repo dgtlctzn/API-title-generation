@@ -34,13 +34,13 @@ public class SongTitleController {
     public Random random = new Random();
 
     // functions to randomly choose a word from the db by word type
-    public String findNoun(Boolean plural) {
+    public String findNoun(String type) {
         Iterable<Nouns> nouns = nounDao.findAll();
         List<String> nounList = new ArrayList<>();
         for (Nouns noun : nouns) {
-            if (plural && noun.getType().equals("NNS")) {
+            if (!type.equals("") && noun.getType().equals(type)) {
                 nounList.add(noun.getNoun());
-            } else if (!plural) {
+            } else if (type.equals("")) {
                 nounList.add(noun.getNoun());
             }
         }
@@ -60,13 +60,13 @@ public class SongTitleController {
         return verbList.get(randVerbNum);
     }
 
-    public String findVerb(Boolean gerund) {
+    public String findVerb(String type) {
         Iterable<Verbs> verbs = verbDao.findAll();
         List<String> verbList = new ArrayList<>();
         for (Verbs verb : verbs) {
-            if (gerund && verb.getType().equals("VBG")) {
+            if (!type.equals("") && verb.getType().equals(type)) {
                 verbList.add(verb.getVerb());
-            } else if (!gerund) {
+            } else if (type.equals("")) {
                 verbList.add(verb.getVerb());
             }
         }
@@ -235,16 +235,16 @@ public class SongTitleController {
                     int randomPos = this.random.nextInt(4);
                     switch(randomPos) {
                         case 0:
-                            songTitle = findVerb(false) + " " + findNoun(false);
+                            songTitle = findVerb("") + " " + findNoun("");
                             break;
                         case 1:
-                            songTitle = findVerb(true) + " " + findDeterminer() + " " + findNoun(true);
+                            songTitle = findVerb("VBG") + " " + findDeterminer() + " " + findNoun("NNS");
                             break;
                         case 2:
-                            songTitle = findVerb(false) + " " + findPreposition() + " " + findNoun(false);
+                            songTitle = findVerb("") + " " + findPreposition() + " " + findNoun("");
                             break;
                         default:
-                            songTitle = findNoun(false) + " " + findPreposition() + " " + findPronoun() + " " + findNoun(false);
+                            songTitle = findNoun("") + " " + findPreposition() + " " + findPronoun() + " " + findNoun("");
                             break;
                     }
                     songTitles.add(songTitle);

@@ -10,6 +10,7 @@ public class Pronouns {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
     private String pronoun;
+    private String type;
 
     public Integer getId() {
         return this.id;
@@ -26,4 +27,8 @@ public class Pronouns {
     public String getPronoun() {
         return this.pronoun;
     }
+
+    public void setType(String type) {this.type = type;}
+
+    public String getType() { return this.type;}
 }

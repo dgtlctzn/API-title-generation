@@ -92,15 +92,19 @@ public class SongTitleController {
         return verbList.get(randVerbNum);
     }
 
-    public String findPronoun() {
+    public String findPronoun(String type) {
         Iterable<Pronouns> pronouns = pronounDao.findAll();
-        int pronounLength = (int)pronouns.spliterator().getExactSizeIfKnown();
-        int randPronounNum = random.nextInt(pronounLength);
         List<String> pronounList = new ArrayList<>();
         for (Pronouns pronoun : pronouns) {
-            pronounList.add(pronoun.getPronoun());
+            if (!type.equals("") && pronoun.getType().equals(type)) {
+                pronounList.add(pronoun.getPronoun());
+            } else if (type.equals("")) {
+                pronounList.add(pronoun.getPronoun());
+            }
         }
-        return pronounList.get(randPronounNum);
+        int pronounLength = pronounList.size();
+        int randVerbNum = random.nextInt(pronounLength);
+        return pronounList.get(randVerbNum);
     }
 
     public String findDeterminer() {
@@ -159,7 +163,7 @@ public class SongTitleController {
                         verb.setType(sentence.posTag(i));
                         verbDao.save(verb);
                         verbsNum += 1;
-                    } else if (pos.contains("PRP$")) {
+                    } else if (pos.contains("PRP")) {
                         // save pronouns "PRP" to pronoun table
                         Pronouns pronoun = new Pronouns();
                         pronoun.setPronoun(sentence.word(i));
@@ -273,7 +277,7 @@ public class SongTitleController {
                     List<String> songTitles = new ArrayList<>();
                     for (int i = 0; i < num; i++) {
                         String songTitle;
-                        int randomPos = this.random.nextInt(4);
+                        int randomPos = this.random.nextInt(5);
                         switch(randomPos) {
                             case 0:
                                 songTitle = "The " + findNoun("") + " " + findNoun("NNS");
@@ -284,8 +288,11 @@ public class SongTitleController {
                             case 2:
                                 songTitle = findVerb("") + " " + findPreposition() + " " + findNoun("");
                                 break;
+                            case 3:
+                                songTitle = findPronoun("PRP") + " " + findVerb("VBD") + " " + findPronoun("PRP$") + " " + findNoun("NNP");
+                                break;
                             default:
-                                songTitle = findNoun("") + " " + findPreposition() + " " + findPronoun() + " " + findNoun("");
+                                songTitle = findNoun("") + " " + findPreposition() + " " + findPronoun("PRP$") + " " + findNoun("");
                                 break;
                         }
                         songTitles.add(songTitle);
@@ -369,11 +376,11 @@ public class SongTitleController {
 
                         switch(randomBook) {
                             case 0:
-                                booktitle = findPronoun() + " " + findBookNoun("");
+                                booktitle = findPronoun("PRP$") + " " + findBookNoun("");
                                 books.add(booktitle);
                                 break;
                             case 1:
-                                booktitle = findBookNoun("") + " " + findPreposition() + " " + findPronoun() + " " + findBookNoun("NNS");
+                                booktitle = findBookNoun("") + " " + findPreposition() + " " + findPronoun("PRP$") + " " + findBookNoun("NNS");
                                 books.add(booktitle);
                                 break;
                             case 2:

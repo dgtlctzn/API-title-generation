@@ -276,10 +276,10 @@ public class SongTitleController {
                         int randomPos = this.random.nextInt(4);
                         switch(randomPos) {
                             case 0:
-                                songTitle = findVerb("") + " " + findNoun("");
+                                songTitle = "The " + findNoun("") + " " + findNoun("NNS");
                                 break;
                             case 1:
-                                songTitle = findVerb("VBG") + " " + findDeterminer() + " " + findNoun("NNS");
+                                songTitle = findVerb("VBG") + " " + findNoun("NNS");
                                 break;
                             case 2:
                                 songTitle = findVerb("") + " " + findPreposition() + " " + findNoun("");

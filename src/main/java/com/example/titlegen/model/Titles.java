@@ -4,12 +4,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "song_titles_2")
-public class SongTitles {
+public class Titles {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private String songTitles;
+    private String titles;
 
     public Integer getId() {
         return this.id;
@@ -20,10 +20,10 @@ public class SongTitles {
     }
 
     public void setName(String name) {
-        this.songTitles = name;
+        this.titles = name;
     }
 
     public String getName() {
-        return this.songTitles;
+        return this.titles;
     }
 }

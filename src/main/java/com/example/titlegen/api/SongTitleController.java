@@ -45,7 +45,7 @@ public class SongTitleController extends Nlp {
             return new ResponseEntity<>(json, HttpStatus.OK);
 
         } else if (headers.containsKey("type") && headers.get("type").equals("book")) {
-            // title generation for startups
+            // title generation for books
             String text = titles.getName();
             List<String> namesSaved = saveBookWords(text);
             FormatString format = new FormatString(false, namesSaved.toArray(), "book", "words saved to database");

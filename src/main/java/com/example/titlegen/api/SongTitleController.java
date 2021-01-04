@@ -3,6 +3,7 @@ package com.example.titlegen.api;
 import com.example.titlegen.model.Titles;
 import com.example.titlegen.nlp.Nlp;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +16,18 @@ import java.util.*;
 @RestController
 public class SongTitleController extends Nlp {
 
+    @Value("${spring.datasource.password}")
+    private String password;
+
     @PostMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Object> addNewSongTitle (@RequestBody Titles titles,
                                                  @RequestHeader Map<String,String> headers) {
-        if (!headers.get("authorization").equals("-2E]2n[Iy6<7Oma")) {
+        if (!headers.get("authorization").equals(this.password)) {
             FormatString format = new FormatString(true, null, null,"invalid token");
             Gson gson = new Gson();
             String json = gson.toJson(format);
             return new ResponseEntity<>(json, HttpStatus.FORBIDDEN);
         };
-
         if (headers.containsKey("type") && headers.get("type").equals("song")) {
             // title generation for songs
             String text = titles.getName();

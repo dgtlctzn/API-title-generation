@@ -1,7 +1,63 @@
-#json-block {
+body {
+    background-color: #383838;
+    font-family: 'Lucida Console', Monaco, monospace;
+    color: white;
+}
+
+h1 {
+    font-size: 150px;
+    padding: 20px;
+}
+
+.json-block {
+    padding: 20px;
+}
+
+#json {
     white-space: pre-wrap;
 }
 
 table {
-    width: 100%;
+    margin: 20px;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+
+tr:nth-child(odd) {
+  background-color: #282828;
+}
+
+tr:nth-child(even) {
+ background-color: #303030;
+}
+
+code {
+    color: yellow;
+}
+
+#main-link {
+    color: yellow;
+}
+
+#main-link:hover {
+    color: #dbdb00;
+}
+
+#git-link {
+    color: white;
+}
+
+#git-link:hover {
+    color: #dedede;
+}
+
+#main-body {
+    margin-top: 20px;
+}
+
+i {
+    font-size: 100px;
 }

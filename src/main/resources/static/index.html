@@ -4,36 +4,56 @@
     <meta charset="UTF-8">
     <title>Title Gen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"></head>
+    <script src="https://kit.fontawesome.com/22554c5f6f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="index.css"/>
 <body>
-    <h1>Title Gen</h1>
-    <p>The following endpoint can be used to generate random song, book, or startup titles:</p>
-    <p>titlegen.us-east-1.elasticbeanstalk.com/api/v1/titlegen</p>
-    <table>
-        <tr>
-            <th>Param</th>
-            <th>Required</th>
-            <th>Description</th>
-        </tr>
-        <tr>
-            <td>no</td>
-            <td>false</td>
-            <td>number of titles generated. An empty param will return one title. A max of 15 titles can be queried at a time.</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>true</td>
-            <td>type of generated title: <em>song</em>, <em>book</em>, or <em>startup</em>.</td>
-        </tr>
-    </table>
-    <p>The format for the returned JSON response is as follows:</p>
-    <code id="json-block">
-        {
-            "error": Boolean,
-            "data": Array of Generated Titles,
-            "type": String,
-            "message": String
-        }
-    </code>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h1>Title Gen</h1>
+                <p>The following endpoint can be used to generate random song, book, or startup titles:</p>
+                <a id="main-link" href="http://titlegen.us-east-1.elasticbeanstalk.com/api/v1/titlegen?type=song&no=4">titlegen.us-east-1.elasticbeanstalk.com/api/v1/titlegen</a>
+            </div>
+        </div>
+        <div class="row" id="main-body">
+            <div class="col-sm-6">
+                <table>
+                    <tr>
+                        <th>Param</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>no</td>
+                        <td>false</td>
+                        <td>number of titles generated. An empty param will return one title. A max of 15 titles can be queried at a time.</td>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>true</td>
+                        <td>type of generated title: <em>song</em>, <em>book</em>, or <em>startup</em>.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-6 json-block">
+                <p>The format for the returned JSON response is as follows:</p>
+                <code id="json">
+{
+    "error": Boolean,
+    "data": Array of Generated Titles,
+    "type": String,
+    "message": String
+}
+                </code>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a id="git-link" href="https://github.com/dgtlctzn/API-title-generation">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

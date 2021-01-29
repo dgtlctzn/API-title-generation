@@ -3,7 +3,7 @@
 
 
 ## Description
-Title Gen is an API for generating random song, book, or startup titles.
+[Title Gen](http://titlegen.us-east-1.elasticbeanstalk.com) is an API for generating random song, book, or startup titles.
 The following GET endpoint allows queries for title type and amount of titles to be generated:
 
 [titlegen.us-east-1.elasticbeanstalk.com/api/v1/titlegen](http://titlegen.us-east-1.elasticbeanstalk.com/api/v1/titlegen?type=song&no=4)
